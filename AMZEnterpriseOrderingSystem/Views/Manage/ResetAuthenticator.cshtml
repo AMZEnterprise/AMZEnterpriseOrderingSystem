@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "ریست کردن کلید تایید کننده";
+    ViewData.AddActivePage(ManageNavPages.TwoFactorAuthentication);
+}
+
+<h4>@ViewData["Title"]</h4>
+<div class="alert alert-warning" role="alert">
+    <p>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <strong>اگر کلید تایید کننده را ریست کنید ، نرم افزار تایید کننده تا تنظیم مجدد آن کار نخواهد کرد.</strong>
+    </p>
+    <p>
+        این فرایند تایید دو مرحله ای را تا تایید مجدد نرم افزار تایید کننده ، لغو خواهد کرد و تایید دو مرحله ای را ریست می کند.
+        اگر تنظیمات مربوط به نرم افزار تایید کننده را کامل نکرده اید دسترسی به حساب کاربری شما احتمالا قطع می شود.
+    </p>
+</div>
+<div>
+    <form asp-action="ResetAuthenticator" method="post" class="form-group">
+        <button class="btn btn-danger" type="submit">ریست کردن کلید</button>
+    </form>
+</div>

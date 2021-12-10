@@ -1,0 +1,127 @@
+﻿@using AMZEnterpriseOrderingSystem.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<!DOCTYPE html>
+<html lang="fa-IR" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - سیستم ثبت سفارش</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/Typeahead.css" />
+        <link rel="stylesheet" href="~/css/jquery-ui.min.css" />
+        <link rel="stylesheet" href="~/lib/jquery-timepicker/jquery.timepicker.min.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/Typeahead.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/jquery-ui.min.css" />
+        <link rel="stylesheet" href="~/lib/jquery-timepicker/jquery.timepicker.min.css" />
+    </environment>
+    
+    <link  rel="stylesheet" href="~/lib/fontawesome/css/all.min.css"/>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" asp-action="Index" asp-controller="Home">سیستم مدیریت سفارش</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+
+                @if (User.IsInRole(SD.AdminEndUser) || User.IsInRole(SD.CustomerEndUser))
+                {
+                    <li class="nav-item"><a class="nav-link" asp-action="OrderHistory" asp-controller="Order">تاریخچه سفارش</a> </li>
+                }
+                @if (User.IsInRole(SD.AdminEndUser))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            مدیریت
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-controller="Categories" asp-action="Index">دسته بندی ها</a>
+                            <a class="dropdown-item" asp-controller="SubCategories" asp-action="Index">زیر دسته ها</a>
+                            <a class="dropdown-item" asp-controller="MenuItems" asp-action="Index">آیتم های منو</a>
+                            <a class="dropdown-item" asp-controller="Coupons" asp-action="Index">کوپن های تخفیف</a>
+                            <a class="dropdown-item" asp-controller="Users" asp-action="Index">کاربران</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            سفارش
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-action="ManageOrder" asp-controller="Order">مدیریت سفارش</a>
+                            <a class="dropdown-item" asp-action="OrderPickup" asp-controller="Order">دریافت سفارش</a>
+                            <a asp-controller="Order" asp-action="OrderSummaryExport" class="dropdown-item">دانلود جزئیات سفارش</a>
+                        </div>
+                    </li>
+                }
+                @if (User.IsInRole(SD.AdminEndUser) || User.IsInRole(SD.CustomerEndUser))
+                {
+                    @if (HttpContextAccessor.HttpContext.Session.GetInt32("CartCount") != null)
+                    {
+                        <li style="color:white;">
+                            <a asp-controller="Cart" asp-action="Index" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                &nbsp;(@HttpContextAccessor.HttpContext.Session.GetInt32("CartCount"))
+                            </a>
+                        </li>
+
+                    }
+                    else
+                    {
+                        <li style="color:white;">
+                            <a asp-controller="Cart" asp-action="Index" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                &nbsp;(0)
+                            </a>
+                        </li>
+                    }
+                }
+
+            </ul>
+        </div>
+
+
+
+        <div class="form-inline">
+            @await Html.PartialAsync("_loginPartial")
+        </div>
+
+    </nav>
+    <div class="container body-content">
+        <br />
+        @RenderBody()
+        <br />
+        <hr />
+
+    </div>
+
+    <footer class="footer">
+        <div class="cont">
+            <p class="text-muted">AMZEnterpriseOrderingSystem &copy; @DateTime.Now.Year</p>
+        </div>
+    </footer>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/jquery-ui.min.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/jquery-ui.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

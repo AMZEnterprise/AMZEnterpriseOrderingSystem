@@ -1,0 +1,89 @@
+﻿@model AMZEnterpriseOrderingSystem.Models.ShoppingCart
+
+@{
+    ViewData["Title"] = "جزئیات آیتم منو";
+}
+<br />
+<h2>جزئیات</h2>
+<hr />
+<form method="post">
+    <div class="form-border row">
+        <div class="col-8">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Name" class="custom-label"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="MenuItem.Name" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Description" class="custom-label"></label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="MenuItem.Description" style="height:150px;" class="form-control" readonly></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Price" class="custom-label"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="MenuItem.Price" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Spicyness" class="custom-label"></label>
+                </div>
+                <div class="col-8">
+                    <select asp-for="MenuItem.Spicyness" disabled asp-items="Html.GetEnumSelectList<MenuItem.EScipy>()" class="form-control"></select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="MenuItem.CategoryId" class="custom-label"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="MenuItem.Category.Name" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="MenuItem.SubCategoryId" class="custom-label"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="MenuItem.SubCategory.Name" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Count" class="custom-label"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Count" class="form-control" />
+                    <span asp-validation-for="Count" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                </div>
+                <div class="col-8">
+                    <button type="submit" value="Add to Cart" class="btn btn-primary form-control">افزودن به سبد خرید</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-3">
+            <img src="@Model.MenuItem.Image" width="100%" style="border-radius:5px;border:1px solid #bbb9b9;" />
+        </div>
+        <br />
+        <div class="form-group row col-12">
+            <a asp-action="Index" class="btn btn-success"> بازگشت به لیست</a>
+        </div> 
+    </div>
+    <input asp-for="MenuItemId" hidden />
+</form>
+

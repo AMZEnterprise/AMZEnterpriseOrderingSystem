@@ -1,0 +1,59 @@
+﻿@model IEnumerable<AMZEnterpriseOrderingSystem.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "کاربران";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<div class="form-border">
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>
+                    نام
+                </th>
+                <th>
+                    نام خانوادگی
+                </th>
+                <th>
+                    ایمیل
+                </th>
+                <th>
+                    تلفن
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        <a type="button" class="btn btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a type="button" class="btn btn btn-danger" asp-action="Lock" asp-route-id="@item.Id">
+                            <i class="fas fa-lock"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

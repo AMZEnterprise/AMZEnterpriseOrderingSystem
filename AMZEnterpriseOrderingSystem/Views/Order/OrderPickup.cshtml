@@ -1,0 +1,109 @@
+﻿@model List<AMZEnterpriseOrderingSystem.Models.OrderDetailsViewModel.OrderDetailsViewModel>
+@using AMZEnterpriseOrderingSystem.Utility
+
+@{
+    ViewData["Title"] = "دریافت سفارش";
+}
+
+<form method="get">
+    <br />
+
+    <div style="height:150px;background-color:aliceblue" class="container">
+        <h4 style="color:steelblue">&nbsp; جستجوی پیشرفته</h4>
+        <div class="col-12">
+            <div class="row" style="padding-top:10px;">
+                <div class="col-2">
+                    شماره سفارش
+                </div>
+                <div class="col-3">
+                    @Html.Editor("searchOrder", new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-2"></div>
+                <div class="col-2">
+                    تلفن
+                </div>
+                <div class="col-3">
+                    @Html.Editor("searchPhone", new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="row" style="padding-top:10px;">
+                <div class="col-2">
+                    ایمیل
+                </div>
+                <div class="col-3">
+                    @Html.Editor("searchEmail", new { htmlAttributes = new { @id = "email", @class = "form-control" } })
+                </div>
+                <div class="col-2"></div>
+                <div class="col-2">
+
+                </div>
+                <div class="col-3">
+                    <button type="submit" name="submit" value="Search" class="btn btn-primary form-control">
+                        <i class="fas fa-search"></i> جستجو
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <h3> سفارش ها : </h3>
+    <br />
+
+
+    @if (Model.Count > 0)
+    {
+        @foreach (var item in Model)
+        {
+            <div class="container row">
+                <div class="col-10">
+                    @Html.Partial("_IndividualOrderDetails", item)
+                </div>
+                <div class="col-2">
+                    @if (item.OrderHeader.Status.Equals(SD.StatusReady))
+                    {
+                        <a asp-action="OrderPickupDetails" asp-route-orderId="@item.OrderHeader.Id" class="btn btn-success">
+                            <i class="far fa-thumbs-up"></i>جزئیات سفارش
+                        </a>
+                    }
+                </div>
+            </div>
+
+        }
+
+    }
+    else
+    {
+        <p>
+            لیست سفارش ها خالی می باشد ...
+        </p>
+
+    }
+</form>
+
+
+@section scripts{
+    <script src="~/js/Typeahead.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            var emailSrc = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/API/Users?type=email&query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#email').typeahead({ highlight: true, minLength: 3 },
+                {
+                    display: 'email',
+                    source: emailSrc
+                });
+
+        });
+    </script>
+
+}

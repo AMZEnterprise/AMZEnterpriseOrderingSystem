@@ -1,0 +1,58 @@
+﻿@model List<AMZEnterpriseOrderingSystem.Models.OrderDetailsViewModel.OrderDetailsViewModel>
+@using AMZEnterpriseOrderingSystem.Utility
+
+@{
+    ViewData["Title"] = "مدیریت سفارش";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form method="post">
+    <br />
+    @if (Model.Count > 0)
+    {
+        @foreach (var item in Model)
+        {
+            <div class="container row">
+                <div class="col-10">
+                    @Html.Partial("_IndividualOrderDetails", item)
+                </div>
+                <div class="col-2">
+                    @if (item.OrderHeader.Status.Equals(SD.StatusSubmitted))
+                    {
+                        <button type="submit" asp-action="OrderPrepare" asp-route-orderId="@item.OrderHeader.Id" class="btn btn-primary form-control">
+                            <i class="fas fa-check"></i>شروع پخت
+                        </button>
+
+                        <button type="submit" asp-action="OrderCancel" asp-route-orderId="@item.OrderHeader.Id" class="btn btn-danger form-control">
+                            <i class="fas fa-times"></i>لغو سفارش
+                        </button>
+
+                    }
+                    else
+                    {
+                        @if (item.OrderHeader.Status.Equals(SD.StatusInProcess))
+                        {
+                            <button type="submit" asp-action="OrderReady" asp-route-orderId="@item.OrderHeader.Id" class="btn btn-success form-control">
+                                <i class="fas fa-flag-checkered"></i>سفارش آماده
+                            </button>
+
+                            <button type="submit" asp-action="OrderCancel" asp-route-orderId="@item.OrderHeader.Id" class="btn btn-danger form-control">
+                                <i class="fas fa-times"></i>لغو سفارش
+                            </button>
+
+                        }
+
+                    }
+                </div>
+            </div>
+
+        }
+
+    }
+    else
+    {
+        <p> لیست سفارش ها خالی می باشد ...</p>
+
+    }
+</form>
+

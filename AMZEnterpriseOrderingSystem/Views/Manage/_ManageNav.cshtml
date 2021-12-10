@@ -1,0 +1,19 @@
+﻿@using AMZEnterpriseOrderingSystem.Views.Manage
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+
+<a class="form-control btn btn-outline-primary" asp-action="Index">پروفایل</a>
+<br /><br />
+<a class="form-control btn btn-outline-primary" asp-action="ChangePassword">کلمه عبور</a>
+<br /><br />
+@if (hasExternalLogins)
+{
+    <a class="form-control btn btn-outline-primary" asp-action="ExternalLogins">ورود از سرویس های خارجی</a>
+    <br /><br />
+}
+<a class="form-control btn btn-outline-primary" asp-action="TwoFactorAuthentication">تایید دو مرحله ای</a>
+
+

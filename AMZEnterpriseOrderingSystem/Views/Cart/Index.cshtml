@@ -1,0 +1,199 @@
+﻿@model AMZEnterpriseOrderingSystem.Models.OrderDetailsViewModel.OrderDetailsCart
+@{
+    ViewData["Title"] = "سبد خرید";
+}
+
+<form method="post">
+    <h2>سبد خرید شما</h2>
+    <br />
+
+    @if (Model.listCart.Count > 0)
+    {
+        <input id="userId" asp-for="@Model.listCart[0].ApplicationUserId" hidden />
+        <div class="border border-info" style="padding:15px;">
+            <div class="container">
+                <table class="table table-striped" width="100%">
+                    <tr>
+                        <th></th>
+                        <th style="width:70px;text-align:center">
+                            <label asp-for="@Model.listCart.FirstOrDefault().MenuItem.Price"></label>
+                        </th>
+                        <th style="width:70px;text-align:center">
+                            <label asp-for="@Model.listCart.FirstOrDefault().Count"></label>
+                        </th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in Model.listCart)
+                    {
+                        <tr style="padding:50px;">
+                            <td>
+                                <b>
+                                    @Html.DisplayFor(c => item.MenuItem.Name)
+                                </b>
+                                <br />
+                                @Html.DisplayFor(c => item.MenuItem.Description)
+                            </td>
+                            <td style="width:70px;text-align:center">
+                                @Html.DisplayFor(c => item.MenuItem.Price)
+                            </td>
+                            <td style="width:70px;text-align:center">
+                                @Html.DisplayFor(c => item.Count)
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-primary" asp-action="plus" asp-route-cartId="@item.Id">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+
+                                <button type="submit" class="btn btn-danger" asp-action="minus" asp-route-cartId="@item.Id">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                    }
+                </table>
+            </div>
+            <hr />
+            <div class="container">
+                <div class="row">
+                    <div class="col-2">
+                        <label class="custom-label">کد تخفیف : </label>
+                    </div>
+                    <div class="col-2">
+                        <input asp-for="@Model.OrderHeader.CouponCode" id="txtCouponCode" class="form-control" />
+                    </div>
+                    <div class="col-2">
+                        <input type="button" value="اعمال" id="btnCoupon" class="btn btn-sm btn-success" />
+                        <a asp-action="Index" asp-controller="Cart" id="btnRemoveCoupon" style="display:none;" class="btn btn-sm btn-success">پاک کردن</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <label class="custom-label">جمع کل : </label>
+                    </div>
+                    <div class="col-3">
+                        <input asp-for="@Model.OrderHeader.OrderTotal" readonly id="txtOrderTotal" class="form-control" />
+                    </div>
+                    <div class="col-2">
+
+                    </div>
+                    <div class="col-2">
+                        <label class="custom-label">زمان تحویل : </label>
+                    </div>
+                    <div class="col-3">
+                        <input asp-for="@Model.OrderHeader.PickUpTime" id="timepicker" value="" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <label class="custom-label">توضیحات : </label>
+                    </div>
+                    <div class="col-10">
+                        <textarea asp-for="@Model.OrderHeader.Comments" style="height:100px;" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row" style="padding-top:5px;">
+                    <div class="col-2">
+
+                    </div>
+                    <div class="col-5">
+                        <label class="text-danger" id="lblShopClosed" style="display:none;">Restaurant is closed for the day. </label>
+                    </div>
+                    <div class="col-5 text-right">
+                        <button type="submit" id="btnPlaceOrder" onclick="return validateInput()" value="Place Order" class="btn btn-success">ثبت سفارش</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        <div> سبد خرید شما خالی است ...</div>
+
+    }
+</form>
+
+@section Scripts{ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.js"></script>
+
+    <script>
+
+        function validateInput() {
+            var time = document.getElementById("timepicker").value;
+            if (time.toString() == '') {
+                alert("لطفا زمان تحویل را مشخص کنید");
+                return false;
+
+            }
+            else {
+                return true;
+
+            }
+
+        }
+
+
+        $(document).ready(function () {
+            var curDt = new Date();
+            //12pm-10pm
+            var minTime = "";
+            if (curDt.getHours() < 11) {
+                minTime = '12:00pm';
+            }
+            else {
+                if (curDt.getMinutes() < 30) {
+                    minTime = (curDt.getHours() + 1).toString() + ':30pm'
+                }
+                else {
+                    minTime = (curDt.getHours() + 2).toString() + ':00pm'
+                }
+            }
+
+            if (curDt.getHours() > 20) {
+                //No More orders
+                $('timepicker').prop('disabled', true);
+                $('btnPlaceOrder').prop('disabled', true);
+                $('lblShopClosed').show();
+            }
+
+            $('#timepicker').timepicker({
+                'minTime': minTime,
+                'maxTime': '20:00pm'
+            });
+
+        });
+
+
+        $('#btnCoupon').click(function () {
+            var couponCode = document.getElementById("txtCouponCode").value;
+            var orderTotal = document.getElementById("txtOrderTotal").value;
+
+            $.ajax({
+                url: '/API/CouponAPI?orderTotal=' + orderTotal + '&couponCode=' + couponCode,
+                type: 'GET',
+                dataType: 'text',
+                success: function (data, textStatus, xhr) {
+                    var splitData = data.split(":");
+
+                    if (splitData[1] == 'E') {
+                        //Error
+                        alert("کد تخفیف وارد شده معتبر نمی باشد");
+                    }
+                    else {
+                        //Success
+                        $('#txtOrderTotal').attr('value', Math.round(splitData[0] * 100) / 100);
+                        document.getElementById('txtCouponCode').readOnly = true;
+                        document.getElementById('btnCoupon').style.display = 'none';
+                        document.getElementById('btnRemoveCoupon').style.display='';
+
+                    }
+
+                }
+
+            })
+
+        });
+
+    </script>
+}
